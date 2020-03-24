@@ -1,0 +1,8 @@
+[
+    {
+      "id": "komunitin-redeploy",
+      "execute-command": "/opt/komunitin-deploy/scripts/redeploy.sh",
+      "command-working-directory": "/opt/komunitin-deploy/scripts",
+      "response-message": "Redeploying Komunitin server."
+    }
+  ]
