@@ -1,2 +1,2 @@
 # komunitin-deploy
-Testing deploy scripts for CD
+Testing deploy scripts for Continuous Delivery
