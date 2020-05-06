@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/sh
 
 docker stop komunitin-app
 docker system prune -f
