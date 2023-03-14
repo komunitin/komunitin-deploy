@@ -1,6 +1,5 @@
 #!/bin/sh
 
-docker stop komunitin-app-test
+docker-compose --project-name komunitin-test --file /opt/komunitin-deploy/docker-compose.test.yml down --volumes
 docker system prune -f
-docker pull komunitin/komunitin-app:demo
-docker run -p 2030:80 -d --name=komunitin-app-test --restart unless-stopped komunitin/komunitin-app:demo
+docker-compose --project-name komunitin-test --file /opt/komunitin-deploy/docker-compose.test.yml up -d

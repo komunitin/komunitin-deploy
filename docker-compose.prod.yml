@@ -1,0 +1,22 @@
+version: "3.2"
+services:
+  app-demo:
+    image: komunitin/komunitin-app
+    restart: unless-stopped
+    ports:
+      - "2030:80"
+
+  notifications:
+    depends_on:
+      - redis
+    image: komunitin/komunitin-notifications:latest
+    ports:
+      - "2028:2028"
+
+  redis:
+    image: redis:7
+    volumes:
+    - redis_data:/data
+
+volumes:
+  redis_data:
