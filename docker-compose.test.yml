@@ -19,6 +19,8 @@ services:
       - KOMUNITIN_APP_URL=https://test.komunitin.org
       - NOTIFICATIONS_CLIENT_ID=notifications.test.komunitin.org
       - NOTIFICATIONS_CLIENT_SECRET=${NOTIFICATIONS_CLIENT_SECRET}
+      - NOTIFICATIONS_EVENTS_USERNAME=integralces
+      - NOTIFICATIONS_EVENTS_PASSWORD=${NOTIFICATIONS_CLIENT_SECRET}
     volumes:
       - "./komunitin-project-firebase-adminsdk.json:/opt/notifications/komunitin-project-firebase-adminsdk.json"
 
