@@ -1,14 +1,14 @@
 # Reinstall IntegralCES demo.
 
-export SITE_NAME="IntegralCES Demo"
-export ADMIN_PASSWORD="demo@ices2030"
-export MYSQL_PASSWORD="demo@ices2030"
+SITE_NAME="IntegralCES Demo"
+ADMIN_PASSWORD="demo@ices2030"
+MYSQL_PASSWORD="demo@ices2030"
 
 cd /opt/ices
 docker-compose down --volumes
 git pull
 docker-compose up -d --build
-./install.sh --demo
+. ./install.sh --demo
 
 # Add settings for proxy-pass and mail
 docker-compose exec integralces printf "\n\
