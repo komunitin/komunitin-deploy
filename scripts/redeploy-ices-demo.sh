@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Reinstall IntegralCES demo.
 
 export ICES_SITE_NAME="IntegralCES Demo"
