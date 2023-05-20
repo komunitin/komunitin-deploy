@@ -5,13 +5,13 @@ ADMIN_PASSWORD="demo@ices2030"
 MYSQL_PASSWORD="demo@ices2030"
 
 cd /opt/ices
-docker-compose down --volumes
+docker compose down --volumes
 git pull
-docker-compose up -d --build
+docker compose up -d --build
 . ./install.sh --demo
 
 # Add settings for proxy-pass and mail
-docker-compose exec integralces printf "\n\
+docker compose exec integralces printf "\n\
 // Configure reverse proxy.\n\
 $conf['reverse_proxy'] = TRUE;\n\
 $conf['reverse_proxy_addresses'] = ['172.17.0.1'];\n\
