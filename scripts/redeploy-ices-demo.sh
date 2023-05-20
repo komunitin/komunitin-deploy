@@ -1,8 +1,8 @@
 # Reinstall IntegralCES demo.
 
-SITE_NAME="IntegralCES Demo"
-ADMIN_PASSWORD="demo@ices2030"
-MYSQL_PASSWORD="demo@ices2030"
+export ICES_SITE_NAME="IntegralCES Demo"
+export ICES_ADMIN_PASSWORD="demo@ices2030"
+export ICES_MYSQL_PASSWORD="demo@ices2030"
 
 cd /opt/ices
 docker compose down --volumes
