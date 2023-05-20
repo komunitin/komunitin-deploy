@@ -10,7 +10,7 @@ cd /opt/ices
 docker compose down --volumes
 git pull
 docker compose up -d --build
-. ./install.sh --demo
+./install.sh --demo
 
 # Add settings for proxy-pass and mail
 docker compose exec integralces printf "\n\
