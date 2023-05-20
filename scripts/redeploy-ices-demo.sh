@@ -16,14 +16,14 @@ sleep 10
 # Add settings for proxy-pass and mail
 docker compose exec integralces bash -c "printf \"\n\
 // Configure reverse proxy.\n\
-\$conf['reverse_proxy'] = TRUE;\n\
-\$conf['reverse_proxy_addresses'] = ['172.17.0.1'];\n\
-\$base_url = 'https://demo.integralces.net';\n\
+\\\$conf['reverse_proxy'] = TRUE;\n\
+\\\$conf['reverse_proxy_addresses'] = ['172.17.0.1'];\n\
+\\\$base_url = 'https://demo.integralces.net';\n\
 \n\
 // Configure mailing (disabled)\n\
-\$conf['smtp_allowhtml'] = 1;\n\
-\$conf['smtp_deliver'] = 0;\n\
-\$conf['smtp_on'] = 1;\n\
+\\\$conf['smtp_allowhtml'] = 1;\n\
+\\\$conf['smtp_deliver'] = 0;\n\
+\\\$conf['smtp_on'] = 1;\n\
 \" >> sites/default/settings.php"
 
 # Add front page message.
