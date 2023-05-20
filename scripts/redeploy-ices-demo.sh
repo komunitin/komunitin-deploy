@@ -10,7 +10,7 @@ cd /opt/ices
 docker compose down --volumes
 git pull
 docker compose up -d --build
-sleep 3
+sleep 10
 ./install.sh --demo
 
 # Add settings for proxy-pass and mail
