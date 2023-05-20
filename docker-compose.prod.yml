@@ -10,6 +10,7 @@ services:
     depends_on:
       - redis
     image: komunitin/komunitin-notifications:latest
+    restart: unless-stopped
     ports:
       - "2028:2028"
     environment:
