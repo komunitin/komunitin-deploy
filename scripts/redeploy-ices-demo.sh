@@ -27,7 +27,7 @@ docker compose exec integralces bash -c "printf \"\n\
 \" >> sites/default/settings.php"
 
 # Add front page message.
-FRONT_DEMO_CONTENT="\n\
+FRONT_DEMO_CONTENT="\
   <p style='color:black;'><i><?php print t('This is a demo site. Login as user:'); ?><br>\n\
   <?php print t('NET1: Gauss, Euclides, Riemann (admin).'); ?><br>\n\
   <?php print t('NET2: Gauss, Noether, Fermat (admin).'); ?><br>\n\
