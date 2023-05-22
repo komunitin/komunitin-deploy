@@ -12,6 +12,9 @@ export ICES_SITE_NAME="IntegralCES Demo"
 export ICES_ADMIN_PASSWORD="$ICES_DEMO_PASSWORD"
 export ICES_MYSQL_PASSWORD="$ICES_DEMO_PASSWORD"
 export NOTIFICATIONS_CLIENT_ID="notifications.test.komunitin.org"
+export NOTIFICATIONS_API_URL="https://notifications.test.komunitin.org"
+export NOTIFICATIONS_EVENTS_USERNAME="integralces"
+export NOTIFICATIONS_EVENTS_PASSWORD="$NOTIFICATIONS_CLIENT_SECRET"
 
 # Install ices demo.
 cd /opt/ices
