@@ -2,17 +2,18 @@
 
 # Reinstall IntegralCES demo.
 
-# Load environment variables
+# Load environment variables ICES_DEMO_PASSWORD and NOTIFICATIONS_CLIENT_SECRET from .env file.
 set -a
 . ../.env
 set +a
 
+# Set more env vars.
 export ICES_SITE_NAME="IntegralCES Demo"
 export ICES_ADMIN_PASSWORD="$ICES_DEMO_PASSWORD"
 export ICES_MYSQL_PASSWORD="$ICES_DEMO_PASSWORD"
 export NOTIFICATIONS_CLIENT_ID="notifications.test.komunitin.org"
-export NOTIFICATIONS_CLIENT_SECRET="$NOTIFICATIONS_DEMO_SECRET"
 
+# Install ices demo.
 cd /opt/ices
 docker compose down --volumes
 git pull
