@@ -1,0 +1,4 @@
+.env
+drupal/*
+sql/*
+*.tar.gz

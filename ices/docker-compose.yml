@@ -1,0 +1,28 @@
+version: "3.5"
+
+services:
+  db: 
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: c13ices_prod
+      MARIADB_USER: c13ces
+      MARIADB_PASSWORD: ${ICES_MYSQL_PASSWORD}
+    volumes:
+      - icesdb:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+
+  ices:
+    build: 
+      context: .
+      dockerfile: Dockerfile.drupal
+
+    restart: unless-stopped
+    ports:
+      - "2025:80"
+    volumes:
+      - ./drupal:/var/www/html
+
+volumes:
+  icesdb:
