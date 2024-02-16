@@ -1,0 +1,72 @@
+version: "3.5"
+
+services:
+  db: 
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: c13ices_prod
+      MARIADB_USER: c13ces
+      MARIADB_PASSWORD: ${ICES_MYSQL_PASSWORD}
+    volumes:
+      - icesdb:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    networks:
+      - komunitin
+
+  ices:
+    build: 
+      context: .
+      dockerfile: Dockerfile.drupal
+    restart: unless-stopped
+    environment:
+      - NOTIFICATIONS_API_URL=https://notifications.komunitin.org
+    volumes:
+      - ./drupal:/var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ices.entrypoints=websec"
+      - "traefik.http.routers.ices.rule=Host(`integralces.net`) || Host(`www.integralces.net`)"
+      - "traefik.http.routers.ices.priority=1"
+      - "traefik.http.routers.ices.tls=true"
+      - "traefik.http.routers.ices.tls.certresolver=myresolver"
+      - "traefik.http.routers.ices.tls.domains[0].main=integralces.net"
+      - "traefik.http.routers.ices.tls.domains[0].sans=www.integralces.net"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https?://www.integralces.net/(.*)"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://integralces.net/$${1}"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.routers.ices.middlewares=redirect-to-non-www"
+    networks:
+      - komunitin
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_ABSOLUTE_URI: "https://integralces.net/phpmyadmin/"
+    networks:
+      - komunitin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websec"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`integralces.net`) && PathPrefix(`/phpmyadmin`)"
+      - "traefik.http.routers.phpmyadmin.priority=2"
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.routers.phpmyadmin.tls.domains[0].main=integralces.net"
+      - "traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.prefixes=/phpmyadmin"
+      - "traefik.http.middlewares.phpmyadmin-stripprefix.stripprefix.forceslash=true"
+      - "traefik.http.routers.phpmyadmin.middlewares=phpmyadmin-stripprefix"
+
+volumes:
+  icesdb:
+
+networks:
+  komunitin:
+    name: komunitin
+    external: true
+
