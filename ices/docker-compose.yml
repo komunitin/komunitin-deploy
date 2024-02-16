@@ -24,6 +24,7 @@ services:
       - NOTIFICATIONS_API_URL=https://notifications.komunitin.org
     volumes:
       - ./drupal:/var/www/html
+      - ./php/ices.ini:/usr/local/etc/php/conf.d/ices.ini
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ices.entrypoints=websec"
