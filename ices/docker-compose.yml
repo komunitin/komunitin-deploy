@@ -22,6 +22,7 @@ services:
     restart: unless-stopped
     environment:
       - NOTIFICATIONS_API_URL=https://notifications.komunitin.org
+      - MAILERSEND_API_KEY=${MAILERSEND_API_KEY}
     volumes:
       - ./drupal:/var/www/html
     labels:
