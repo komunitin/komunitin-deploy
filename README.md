@@ -1,14 +1,26 @@
 # komunitin-deploy
-Testing deploy scripts for Continuous Delivery
+Deployment scripts for Komunitin & integralCES
 
-## Requirements
-The target server where the Komunitin app will be deployed must meet the following requirements:
- - Ubuntu linux distribution
- - Docker engine ([official instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/))
- - Clone this repository in the `/opt` folder.
+## DEMO
+### Komunitin (https://demo.komunitin.org)
+Install/Update Komunitin from images. Clears all data.
+```
+$ scripts/redeploy-test.sh
+```
+### IntegralCES (https://demo.integralces.net)
+Install/Update IntegralCES from the `ices` repository located at `/opt/ices`. Clears all data.
+```
+$ scripts/redeploy-ices-demo.sh
+```
 
-## Install
-Run the script `install.sh` from a sudoer user. It will install the [Webhook](https://github.com/adnanh/webhook) server at port `9000`.
-
- 
- 
+## PRODUCTION
+### Komunitin (https://komunitin.org)
+Install/Update Komunitin from images.
+```
+$ scripts/redeploy-prod.sh
+```
+### IntegralCES (https://integralces.net)
+Install/Update IntegralCES from the `/ices` folder. Maintains database data in volume ices-data.
+$ cd ices
+$ docker compose up -d
+```
