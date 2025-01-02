@@ -37,6 +37,8 @@ services:
     image: komunitin/komunitin-notifications:latest
     depends_on:
       - db-notifications
+    links:
+      - db-notifications:redis
     restart: unless-stopped
     environment:
       KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
