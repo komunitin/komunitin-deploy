@@ -17,11 +17,11 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
-      - "traefik.http.routers.app.rule=Host(`${KOMUNITIN_DOMAIN}`)"
-      - "traefik.http.routers.app.entrypoints=websec"
-      - "traefik.http.routers.app.tls=true"
-      - "traefik.http.routers.app.tls.certresolver=myresolver"
+      - "traefik.http.services.app-prod.loadbalancer.server.port=80"
+      - "traefik.http.routers.app-prod.rule=Host(`${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.app-prod.entrypoints=websec"
+      - "traefik.http.routers.app-prod.tls=true"
+      - "traefik.http.routers.app-prod.tls.certresolver=myresolver"
     networks:
       - komunitin-prod
   
@@ -56,11 +56,11 @@ services:
       - "2028"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.notifications.loadbalancer.server.port=2028"
-      - "traefik.http.routers.notifications.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`)"
-      - "traefik.http.routers.notifications.entrypoints=websec"
-      - "traefik.http.routers.notifications.tls=true"
-      - "traefik.http.routers.notifications.tls.certresolver=myresolver"
+      - "traefik.http.services.notifications-prod.loadbalancer.server.port=2028"
+      - "traefik.http.routers.notifications-prod.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.notifications-prod.entrypoints=websec"
+      - "traefik.http.routers.notifications-prod.tls=true"
+      - "traefik.http.routers.notifications-prod.tls.certresolver=myresolver"
     networks:
       - komunitin-prod
 
@@ -106,11 +106,11 @@ services:
       - "2025"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.accounting.loadbalancer.server.port=2025"
-      - "traefik.http.routers.accounting.rule=Host(`accounting.${KOMUNITIN_DOMAIN}`)"
-      - "traefik.http.routers.accounting.entrypoints=websec"
-      - "traefik.http.routers.accounting.tls=true"
-      - "traefik.http.routers.accounting.tls.certresolver=myresolver"
+      - "traefik.http.services.accounting-prod.loadbalancer.server.port=2025"
+      - "traefik.http.routers.accounting-prod.rule=Host(`accounting.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.accounting-prod.entrypoints=websec"
+      - "traefik.http.routers.accounting-prod.tls=true"
+      - "traefik.http.routers.accounting-prod.tls.certresolver=myresolver"
     
     networks:
       - komunitin-prod
@@ -151,17 +151,17 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.integralces.loadbalancer.server.port=80"
-      - "traefik.http.routers.ices.rule=Host(`integralces.net`) || Host(`www.integralces.net`)"
-      - "traefik.http.routers.integralces.entrypoints=websec"
-      - "traefik.http.routers.integralces.tls=true"
-      - "traefik.http.routers.integralces.tls.certresolver=myresolver"
-      - "traefik.http.routers.integralces.tls.domains[0].main=integralces.net"
-      - "traefik.http.routers.integralces.tls.domains[0].sans=www.integralces.net"
+      - "traefik.http.services.integralces-prod.loadbalancer.server.port=80"
+      - "traefik.http.routers.integralces-prod.rule=Host(`integralces.net`) || Host(`www.integralces.net`)"
+      - "traefik.http.routers.integralces-prod.entrypoints=websec"
+      - "traefik.http.routers.integralces-prod.tls=true"
+      - "traefik.http.routers.integralces-prod.tls.certresolver=myresolver"
+      - "traefik.http.routers.integralces-prod.tls.domains[0].main=integralces.net"
+      - "traefik.http.routers.integralces-prod.tls.domains[0].sans=www.integralces.net"
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https?://www.integralces.net/(.*)"
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://integralces.net/$${1}"
       - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
-      - "traefik.http.routers.integralces.middlewares=redirect-to-non-www"
+      - "traefik.http.routers.integralces-prod.middlewares=redirect-to-non-www"
     networks:
       - komunitin-prod
 
@@ -178,11 +178,11 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${KOMUNITIN_DOMAIN}`)"
-      - "traefik.http.routers.phpmyadmin.entrypoints=websec"
-      - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.services.phpmyadmin-prod.loadbalancer.server.port=80"
+      - "traefik.http.routers.phpmyadmin-prod.rule=Host(`phpmyadmin.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.phpmyadmin-prod.entrypoints=websec"
+      - "traefik.http.routers.phpmyadmin-prod.tls=true"
+      - "traefik.http.routers.phpmyadmin-prod.tls.certresolver=myresolver"
     networks:
       - komunitin-prod
 

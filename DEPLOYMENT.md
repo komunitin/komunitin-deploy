@@ -37,7 +37,7 @@ proxy$ docker compose down
 
 - Get komunitin-deploy repository into komunitin.org
 $ mv komunitin-deploy komunitin-deploy-old
-$ git clone git://github.com/komunitin/komunitin-deploy.git
+$ git clone git@github.com:komunitin/komunitin-deploy.git
 $ cd komunitin-deploy
 $ git checkout master
 
@@ -52,8 +52,13 @@ $ cp -R ../komunitin-deploy-old/ices/drupal ices/
 $ sudo chown -R deploy:deploy .
 $ exit
 
+- Start new proxy
+proxy$ docker compose up -d
+
+- Check demo working
+
 - Start new services
-komunitin-deploy$ docker compose up -d
+komunitin-deploy$ docker compose up -d --build
 
 - Check ICES is working and not installed.
 
