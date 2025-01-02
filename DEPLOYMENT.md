@@ -43,7 +43,7 @@ $ git checkout master
 
 - add .env and .json files
 vim .env # copy from local
-su ubuntu # 4J3CE3fK4Zny
+su ubuntu # 
 cp komunitin-deploy-old/komunitin-project-firebase-adminsdk.json .
 
 - add drupal files
@@ -63,7 +63,7 @@ komunitin-deploy$ docker compose up -d --build
 - Check ICES is working and not installed.
 
 - Restore IntegralCES
-komunitin-deploy$ docker compose cp ~/integralces-backup.tar.gz ices:~/root/
+komunitin-deploy$ docker compose cp ~/integralces-backup.tar.gz integralces:~/root/
 komunitin-deploy$ docker compose exec integralces bash
 html# drush arr /root/integralces-backup.tar.gz
 
@@ -73,8 +73,8 @@ html# drush arr /root/integralces-backup.tar.gz
 Go to GoDaddy and change the A record for *.komunitin.org to the new server IP
 
 - Restore redis data volume
-docker compose cp ~/notifications-backup.rdb notifications-db:/data/dump.rdb
-docker compose exec notifications-db bash
+docker compose cp ~/notifications-backup.rdb db-notifications:/data/dump.rdb
+docker compose exec db-notifications bash
 redis# redis-cli --rdb /data/dump.rdb
 
 - Create accounting DB
