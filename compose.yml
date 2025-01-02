@@ -36,7 +36,7 @@ services:
   notifications:
     image: komunitin/komunitin-notifications:latest
     depends_on:
-      - redis
+      - db-notifications
     restart: unless-stopped
     environment:
       KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
