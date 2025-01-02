@@ -1,0 +1,198 @@
+name: komunitin-prod
+services:
+  app:
+    image: komunitin/komunitin-app:latest
+    restart: unless-stopped
+    environment:
+      OAUTH_CLIENTID: komunitin-app
+      MOCK_ENABLE: false
+      AUTH_URL: ${ICES_URL}/oauth2
+      SOCIAL_URL: ${ICES_URL}/ces/api/social
+      FILES_URL: ${ICES_URL}/ces/files
+      ACCOUNTING_URL: ${KOMUNITIN_ACCOUNTING_URL}
+      NOTIFICATIONS_URL: ${KOMUNITIN_NOTIFICATIONS_URL}
+      PUSH_SERVER_KEY: ${PUSH_SERVER_KEY}
+      GTAG_ID: ${GTAG_ID}
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.app.loadbalancer.server.port=80"
+      - "traefik.http.routers.app.rule=Host(`${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.app.entrypoints=websec"
+      - "traefik.http.routers.app.tls=true"
+      - "traefik.http.routers.app.tls.certresolver=myresolver"
+    networks:
+      - komunitin-prod
+  
+  db-notifications:
+    image: redis:7
+    restart: unless-stopped
+    volumes:
+      - db-notifications:/data
+    networks:
+      - komunitin-prod
+
+  notifications:
+    image: komunitin/komunitin-notifications:latest
+    depends_on:
+      - redis
+    restart: unless-stopped
+    environment:
+      KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
+      KOMUNITIN_SOCIAL_URL: http://integralces/ces/api/social
+      KOMUNITIN_AUTH_URL: http://integralces/oauth2
+      KOMUNITIN_APP_URL: ${KOMUNITIN_APP_URL}
+      NOTIFICATIONS_CLIENT_ID: notifications.komunitin.org
+      NOTIFICATIONS_CLIENT_SECRET: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      NOTIFICATIONS_EVENTS_USERNAME: komunitin
+      NOTIFICATIONS_EVENTS_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
+      SEND_MAILS: true
+    volumes:
+      - "./komunitin-project-firebase-adminsdk.json:/opt/notifications/komunitin-project-firebase-adminsdk.json"
+    
+    expose:
+      - "2028"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.notifications.loadbalancer.server.port=2028"
+      - "traefik.http.routers.notifications.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.notifications.entrypoints=websec"
+      - "traefik.http.routers.notifications.tls=true"
+      - "traefik.http.routers.notifications.tls.certresolver=myresolver"
+    networks:
+      - komunitin-prod
+
+  db-accounting:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${ACCOUNTING_POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+      POSTGRES_APP_USER: accounting
+      POSTGRES_APP_PASSWORD: ${ACCOUNTING_POSTGRES_APP_PASSWORD}
+    volumes:
+      - db-accounting:/var/lib/postgresql/data
+      - ./accounting/init-app-db.sh:/docker-entrypoint-initdb.d/init-app-db.sh
+    networks:
+      - komunitin-prod
+  
+  accounting:
+    image: komunitin/komunitin-accounting:latest
+    depends_on:
+      - db-accounting
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://accounting:${ACCOUNTING_POSTGRES_APP_PASSWORD}@db-accounting:5432/accounting?schema=public
+      MASTER_PASSWORD: ${KOMUNITIN_ACCOUNTING_MASTER_PASSWORD}
+      STELLAR_NETWORK: ${STELLAR_NETWORK}
+      STELLAR_HORIZON_URL: ${STELLAR_HORIZON_URL}
+      STELLAR_FRIENDBOT_URL: ${STELLAR_HORIZON_URL}/friendbot
+      STELLAR_CHANNEL_ACCOUNTS_ENABLED: true
+      DOMAIN: ${KOMUNITIN_DOMAIN}
+      MASTER_PASSWORD_SALT: ${KOMUNITIN_ACCOUNTING_MASTER_PASSWORD_SALT}
+      AUTH_JWKS_URL: http://integralces/.well-known/jwks.json
+      AUTH_JWT_ISSUER: ${ICES_URL}/
+      AUTH_JWT_AUDIENCE: "komunitin-app,komunitin-notifications"
+      NOTIFICATIONS_API_URL: http://notifications:2028
+      API_BASE_URL: ${KOMUNITIN_ACCOUNTING_URL}
+      NOTIFICATIONS_API_USERNAME: komunitin
+      NOTIFICATIONS_API_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      SPONSOR_PRIVATE_KEY: ${KOMUNITIN_ACCOUNTING_SPONSOR_PRIVATE_KEY}
+      DOCKER: true
+    expose:
+      - "2025"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.accounting.loadbalancer.server.port=2025"
+      - "traefik.http.routers.accounting.rule=Host(`accounting.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.accounting.entrypoints=websec"
+      - "traefik.http.routers.accounting.tls=true"
+      - "traefik.http.routers.accounting.tls.certresolver=myresolver"
+    
+    networks:
+      - komunitin-prod
+
+  db-integralces:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: c13ices_prod
+      MARIADB_USER: c13ces
+      MARIADB_PASSWORD: ${ICES_MYSQL_PASSWORD}
+    volumes:
+      - db-integralces:/var/lib/mysql
+      - ./ices/sql:/docker-entrypoint-initdb.d:ro
+    networks:
+      - komunitin-prod
+  
+  integralces:
+    build:
+      context: ./ices
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db-integralces
+    environment:
+      NOTIFICATIONS_CLIENT_ID: notifications.komunitin.org
+      NOTIFICATIONS_CLIENT_SECRET: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      NOTIFICATIONS_API_URL: http://notifications:2028
+      NOTIFICATIONS_EVENTS_USERNAME: komunitin
+      NOTIFICATIONS_EVENTS_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
+      CES_USER_GOOGLE_MAPS_KEY: ${GOOGLE_MAPS_KEY}
+    volumes:
+      - ./ices/drupal:/var/www/html
+      - ./ices/php/ices.ini:/usr/local/etc/php/conf.d/ices.ini
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.integralces.loadbalancer.server.port=80"
+      - "traefik.http.routers.ices.rule=Host(`integralces.net`) || Host(`www.integralces.net`)"
+      - "traefik.http.routers.integralces.entrypoints=websec"
+      - "traefik.http.routers.integralces.tls=true"
+      - "traefik.http.routers.integralces.tls.certresolver=myresolver"
+      - "traefik.http.routers.integralces.tls.domains[0].main=integralces.net"
+      - "traefik.http.routers.integralces.tls.domains[0].sans=www.integralces.net"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.regex=^https?://www.integralces.net/(.*)"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.replacement=https://integralces.net/$${1}"
+      - "traefik.http.middlewares.redirect-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.routers.integralces.middlewares=redirect-to-non-www"
+    networks:
+      - komunitin-prod
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db-integralces
+    environment:
+      PMA_HOSTS: "db-integralces,db-accounting"
+      PMA_PORTS: "3306,5432"
+      PMA_ABSOLUTE_URI: "https://phpmyadmin.komunitin.org/"
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websec"
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+    networks:
+      - komunitin-prod
+
+
+volumes:
+  db-notifications:
+  db-accounting:
+  db-integralces:
+
+networks:
+  komunitin-prod:
+    name: ${KOMUNITIN_DOMAIN}
+    external: true

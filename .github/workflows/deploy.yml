@@ -1,0 +1,26 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          known_hosts: 'will-be-set-now'
+      
+      - name: Add remote server to Known Hosts.
+        run: ssh-keyscan -H komunitin.org >> ~/.ssh/known_hosts
+
+      - name: Deploy komunitin.org
+        run: >
+          ssh deploy@komunitin.org
+          "cd /opt/komunitin-deploy
+          && sh deploy.sh
+          "

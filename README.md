@@ -1,26 +1,24 @@
-# komunitin-deploy
-Deployment scripts for Komunitin & integralCES
+# Komunitin Deployment
+Production deployment scripts for Komunitin at https://komunitin.org
 
-## DEMO
-### Komunitin (https://demo.komunitin.org)
-Install/Update Komunitin from images. Clears all data.
-```
-$ scripts/redeploy-test.sh
-```
-### IntegralCES (https://demo.integralces.net)
-Install/Update IntegralCES from the `ices` repository located at `/opt/ices`. Clears all data.
-```
-$ scripts/redeploy-ices-demo.sh
+## Deployment
+
+### Configure
+
+Copy and edit the `.env` file:
+```bash	
+$ cp .env.template .env
 ```
 
-## PRODUCTION
-### Komunitin (https://komunitin.org)
-Install/Update Komunitin from images.
+Copy the Firebase admin SDK key file to `komunitin-project-firebase-adminsdk.json`.
+
+### Update & start services
+```bash	
+$ docker compose up -d --build
 ```
-$ scripts/redeploy-prod.sh
-```
-### IntegralCES (https://integralces.net)
-Install/Update IntegralCES from the `/ices` folder. Maintains database data in volume ices-data.
-$ cd ices
-$ docker compose up -d
+
+### Reverse proxy
+Either use the provided Traefik reverse proxy or configure your own.
+```bash
+$ docker compose -f traefik.yml up -d
 ```
