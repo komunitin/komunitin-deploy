@@ -41,7 +41,7 @@ services:
       - db-notifications:redis
     restart: unless-stopped
     environment:
-      KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
+      KOMUNITIN_ACCOUNTING_URL: http://integralces/ces/api/accounting
       KOMUNITIN_SOCIAL_URL: http://integralces/ces/api/social
       KOMUNITIN_AUTH_URL: http://integralces/oauth2
       KOMUNITIN_APP_URL: ${KOMUNITIN_APP_URL}
