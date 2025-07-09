@@ -52,7 +52,7 @@ services:
       MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
       SEND_MAILS: true
     volumes:
-      - "./komunitin-project-firebase-adminsdk.json:/opt/notifications/komunitin-project-firebase-adminsdk.json"
+      - "./komunitin-project-firebase-adminsdk.json:/opt/notifications/komunitin-project-firebase-adminsdk.json:ro"
     
     expose:
       - "2028"
@@ -67,7 +67,7 @@ services:
       - komunitin-prod
 
   db-accounting:
-    image: postgres:16
+    image: komunitin/komunitin-db-accounting:latest
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -75,9 +75,13 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_APP_USER: accounting
       POSTGRES_APP_PASSWORD: ${ACCOUNTING_POSTGRES_APP_PASSWORD}
+      WALG_GS_PREFIX: ${GOOGLE_CLOUD_STORAGE_BUCKET}/db-accounting
+      WALG_COMPRESSION_METHOD: zstd
+      GOOGLE_APPLICATION_CREDENTIALS: "/opt/komunitin-project-backup-credentials.json"
+      
     volumes:
       - db-accounting:/var/lib/postgresql/data
-      - ./accounting/init-app-db.sh:/docker-entrypoint-initdb.d/init-app-db.sh
+      - ./komunitin-project-backup-credentials.json:/opt/komunitin-project-backup-credentials.json:ro
     networks:
       - komunitin-prod
   
