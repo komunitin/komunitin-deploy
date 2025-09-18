@@ -43,5 +43,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Update ices module in drupal integralces service
+docker compose exec integralces drush up ices -y
+if [ $? -ne 0 ]; then
+  echo "There was an error updating the ices module in the integralces service."
+  exit 1
+fi
+
 # Remove unused docker data
 docker system prune -f
