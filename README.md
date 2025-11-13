@@ -22,3 +22,4 @@ Either use the provided Traefik reverse proxy or configure your own.
 ```bash
 $ docker compose -f traefik.yml up -d
 ```
+
