@@ -51,6 +51,8 @@ services:
       NOTIFICATIONS_EVENTS_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
       MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
       SEND_MAILS: true
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      APP_EMAIL: ${APP_EMAIL}
     volumes:
       - "./komunitin-project-firebase-adminsdk.json:/opt/notifications/komunitin-project-firebase-adminsdk.json:ro"
     
