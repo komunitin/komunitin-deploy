@@ -37,8 +37,6 @@ services:
     image: komunitin/komunitin-notifications:latest
     depends_on:
       - db-notifications
-    links:
-      - db-notifications:redis
     restart: unless-stopped
     environment:
       KOMUNITIN_ACCOUNTING_URL: http://integralces/ces/api/accounting
@@ -49,6 +47,7 @@ services:
       NOTIFICATIONS_CLIENT_SECRET: ${KOMUNITIN_NOTIFICATIONS_SECRET}
       NOTIFICATIONS_EVENTS_USERNAME: komunitin
       NOTIFICATIONS_EVENTS_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      NOTIFICATIONS_API_URL: http://notifications:2028
       MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
       SEND_MAILS: true
       ADMIN_EMAIL: ${ADMIN_EMAIL}
@@ -194,11 +193,51 @@ services:
     networks:
       - komunitin-prod
 
+  db-notifications-ts:
+    image: komunitin/komunitin-db-accounting:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_TS_POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+      POSTGRES_APP_USER: notifications
+      POSTGRES_APP_PASSWORD: ${NOTIFICATIONS_TS_POSTGRES_APP_PASSWORD}
+      WALG_GS_PREFIX: ${GOOGLE_CLOUD_STORAGE_BUCKET}/db-notifications-ts
+      WALG_COMPRESSION_METHOD: zstd
+      GOOGLE_APPLICATION_CREDENTIALS: "/opt/komunitin-project-backup-credentials.json"
+    volumes:
+      - db-notifications-ts:/var/lib/postgresql/data
+      - ./komunitin-project-backup-credentials.json:/opt/komunitin-project-backup-credentials.json:ro
+    networks:
+      - komunitin-prod
+
+  notifications-ts:
+    image: komunitin/komunitin-notifications-ts:latest
+    restart: unless-stopped
+    depends_on:
+      - db-notifications-ts
+    environment:
+      KOMUNITIN_AUTH_URL: http://integralces/oauth2
+      KOMUNITIN_SOCIAL_URL: http://integralces/ces/api/social
+      KOMUNITIN_SOCIAL_PUBLIC_URL: ${ICES_URL}/ces/api/social
+      KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
+      KOMUNITIN_APP_URL: ${KOMUNITIN_APP_URL}
+      DATABASE_URL: postgresql://notifications:${NOTIFICATIONS_TS_POSTGRES_APP_PASSWORD}@db-notifications-ts:5432/notifications?schema=public
+      NOTIFICATIONS_CLIENT_ID: notifications.komunitin.org
+      NOTIFICATIONS_CLIENT_SECRET: ${KOMUNITIN_NOTIFICATIONS_SECRET}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      APP_EMAIL: ${APP_EMAIL}
+    networks:
+      - komunitin-prod
 
 volumes:
   db-notifications:
   db-accounting:
   db-integralces:
+  db-notifications-ts:
 
 networks:
   komunitin-prod:

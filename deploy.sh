@@ -43,6 +43,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+docker compose exec notifications-ts pnpm prisma migrate deploy
+if [ $? -ne 0 ]; then
+  echo "There was an error deploying the DB migrations in the notifications-ts service."
+  exit 1
+fi
+
 # Update ices module in drupal integralces service
 docker compose exec integralces drush up ices -y
 if [ $? -ne 0 ]; then
