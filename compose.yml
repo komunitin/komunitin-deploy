@@ -49,6 +49,10 @@ services:
       NOTIFICATIONS_EVENTS_PASSWORD: ${KOMUNITIN_NOTIFICATIONS_SECRET}
       NOTIFICATIONS_API_URL: http://notifications:2028
       MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
       SEND_MAILS: true
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       APP_EMAIL: ${APP_EMAIL}
@@ -76,6 +80,7 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_APP_USER: accounting
       POSTGRES_APP_PASSWORD: ${ACCOUNTING_POSTGRES_APP_PASSWORD}
+      WALG_ENABLE: true
       WALG_GS_PREFIX: ${GOOGLE_CLOUD_STORAGE_BUCKET}/db-accounting
       WALG_COMPRESSION_METHOD: zstd
       GOOGLE_APPLICATION_CREDENTIALS: "/opt/komunitin-project-backup-credentials.json"
@@ -202,6 +207,7 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_APP_USER: notifications
       POSTGRES_APP_PASSWORD: ${NOTIFICATIONS_TS_POSTGRES_APP_PASSWORD}
+      WALG_ENABLE: true
       WALG_GS_PREFIX: ${GOOGLE_CLOUD_STORAGE_BUCKET}/db-notifications-ts
       WALG_COMPRESSION_METHOD: zstd
       GOOGLE_APPLICATION_CREDENTIALS: "/opt/komunitin-project-backup-credentials.json"
