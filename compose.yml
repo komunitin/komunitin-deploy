@@ -64,7 +64,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.notifications-prod.loadbalancer.server.port=2028"
-      - "traefik.http.routers.notifications-prod.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.notifications-prod.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`) && Path(`/events`)"
       - "traefik.http.routers.notifications-prod.entrypoints=websec"
       - "traefik.http.routers.notifications-prod.tls=true"
       - "traefik.http.routers.notifications-prod.tls.certresolver=myresolver"
@@ -222,6 +222,8 @@ services:
     restart: unless-stopped
     depends_on:
       - db-notifications-ts
+    expose:
+      - "2023"
     environment:
       KOMUNITIN_AUTH_URL: http://integralces/oauth2
       KOMUNITIN_SOCIAL_URL: http://integralces/ces/api/social
@@ -236,6 +238,13 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASS: ${SMTP_PASS}
       APP_EMAIL: ${APP_EMAIL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.notifications-ts-prod.loadbalancer.server.port=2023"
+      - "traefik.http.routers.notifications-ts-prod.rule=Host(`notifications.${KOMUNITIN_DOMAIN}`)"
+      - "traefik.http.routers.notifications-ts-prod.entrypoints=websec"
+      - "traefik.http.routers.notifications-ts-prod.tls=true"
+      - "traefik.http.routers.notifications-ts-prod.tls.certresolver=myresolver"
     networks:
       - komunitin-prod
 
