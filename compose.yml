@@ -11,8 +11,9 @@ services:
       FILES_URL: ${ICES_URL}/ces/files
       ACCOUNTING_URL: ${KOMUNITIN_ACCOUNTING_URL}
       NOTIFICATIONS_URL: ${KOMUNITIN_NOTIFICATIONS_URL}
-      PUSH_SERVER_KEY: ${PUSH_SERVER_KEY}
       GTAG_ID: ${GTAG_ID}
+      PUSH_NOTIFICATIONS_VAPID_PUBLIC_KEY: ${PUSH_NOTIFICATIONS_VAPID_PUBLIC_KEY}
+      DOCS_URL: ${KOMUNITIN_DOCS_URL}
     expose:
       - "80"
     labels:
@@ -231,6 +232,10 @@ services:
       KOMUNITIN_ACCOUNTING_URL: http://accounting:2025
       KOMUNITIN_APP_URL: ${KOMUNITIN_APP_URL}
       DATABASE_URL: postgresql://notifications:${NOTIFICATIONS_TS_POSTGRES_APP_PASSWORD}@db-notifications-ts:5432/notifications?schema=public
+      REDIS_URL: redis://db-notifications:6379
+      AUTH_JWKS_URL: http://integralces/.well-known/jwks.json
+      AUTH_JWT_ISSUER: ${ICES_URL}/
+      AUTH_JWT_AUDIENCE: "komunitin-app,notifications.komunitin.org"
       NOTIFICATIONS_CLIENT_ID: notifications.komunitin.org
       NOTIFICATIONS_CLIENT_SECRET: ${KOMUNITIN_NOTIFICATIONS_SECRET}
       SMTP_HOST: ${SMTP_HOST}
@@ -238,6 +243,9 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASS: ${SMTP_PASS}
       APP_EMAIL: ${APP_EMAIL}
+      PUSH_NOTIFICATIONS_VAPID_PUBLIC_KEY: ${PUSH_NOTIFICATIONS_VAPID_PUBLIC_KEY}
+      PUSH_NOTIFICATIONS_VAPID_PRIVATE_KEY: ${PUSH_NOTIFICATIONS_VAPID_PRIVATE_KEY}
+      PORT: 2023
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.notifications-ts-prod.loadbalancer.server.port=2023"
