@@ -27,7 +27,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Rebuild & restart the containers
-docker compose up -d --build
+docker compose up -d --build --remove-orphans
 if [ $? -ne 0 ]; then
   echo "There was an error starting the containers."
   exit 1
