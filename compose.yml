@@ -73,7 +73,7 @@ services:
       - komunitin-prod
 
   db-accounting:
-    image: komunitin/komunitin-db-accounting:latest
+    image: komunitin/komunitin-db:latest
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -204,7 +204,7 @@ services:
       - komunitin-prod
 
   db-notifications-ts:
-    image: komunitin/komunitin-db-accounting:latest
+    image: komunitin/komunitin-db:latest
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
