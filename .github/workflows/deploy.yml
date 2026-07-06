@@ -16,11 +16,11 @@ jobs:
           known_hosts: 'will-be-set-now'
       
       - name: Add remote server to Known Hosts.
-        run: ssh-keyscan -H komunitin.org >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H direct.komunitin.org >> ~/.ssh/known_hosts
 
       - name: Deploy komunitin.org
         run: >
-          ssh deploy@komunitin.org
+          ssh deploy@direct.komunitin.org
           "cd /opt/komunitin.org
           && sh deploy.sh
           "
