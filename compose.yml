@@ -99,6 +99,7 @@ services:
 
   db-integralces:
     image: mariadb:10.11
+    command: ["--query-cache-size=16M", "--query-cache-type=1"]
     restart: unless-stopped
     environment:
       MARIADB_RANDOM_ROOT_PASSWORD: yes
