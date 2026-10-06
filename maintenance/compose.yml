@@ -1,0 +1,47 @@
+# From this directory: docker compose up -d
+# Disable:             docker compose down
+# Requires Docker Compose >= 2.23.1. See MIGRATION.md for setup and worker shutdown.
+services:
+  maintenance:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    configs:
+      - source: nginx
+        target: /etc/nginx/conf.d/default.conf
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${KOMUNITIN_DOMAIN:?Set KOMUNITIN_DOMAIN}"
+      - "traefik.http.services.maintenance.loadbalancer.server.port=80"
+      # Excluded clients fall through to the existing application routers.
+      - >-
+        traefik.http.routers.maintenance.rule=
+        (Host(`${KOMUNITIN_DOMAIN}`) || Host(`www.${KOMUNITIN_DOMAIN}`) ||
+        Host(`auth.${KOMUNITIN_DOMAIN}`) || Host(`social.${KOMUNITIN_DOMAIN}`) ||
+        Host(`accounting.${KOMUNITIN_DOMAIN}`) || Host(`notifications.${KOMUNITIN_DOMAIN}`) ||
+        Host(`${ICES_DOMAIN:?Set ICES_DOMAIN, e.g. integralces.net}`) || Host(`www.${ICES_DOMAIN}`))
+        && !(${MAINTENANCE_BYPASS:-ClientIP(`127.0.0.1`)})
+      - "traefik.http.routers.maintenance.priority=10000"
+      - "traefik.http.routers.maintenance.entrypoints=websec"
+      # Reuse the proxy's existing certificates without requesting a new multi-domain certificate.
+      - "traefik.http.routers.maintenance.tls=true"
+
+configs:
+  nginx:
+    content: |
+      server {
+        listen 80;
+        default_type text/html;
+        charset utf-8;
+        add_header Retry-After 3600 always;
+        add_header Cache-Control "no-store" always;
+        location / {
+          return 503 '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Maintenance</title><body style="font-family:system-ui;max-width:36rem;margin:15vh auto;padding:1.5rem"><h1>We will be back soon</h1><p>We are migrating Komunitin and IntegralCES. Please try again later.</p></body></html>';
+        }
+      }
+
+networks:
+  proxy:
+    name: ${KOMUNITIN_DOMAIN}
+    external: true

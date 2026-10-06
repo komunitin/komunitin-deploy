@@ -23,12 +23,16 @@ services:
       komunitin.org:
         aliases:
           - komunitin.org
+          - auth.komunitin.org
+          - social.komunitin.org
           - accounting.komunitin.org
           - notifications.komunitin.org
           - integralces.net
       demo.komunitin.org:
         aliases:
           - demo.komunitin.org
+          - auth.demo.komunitin.org
+          - social.demo.komunitin.org
           - accounting.demo.komunitin.org
           - notifications.demo.komunitin.org
           - integralces.demo.komunitin.org
